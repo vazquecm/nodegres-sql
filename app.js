@@ -1,36 +1,35 @@
 'use strict';
 
-var Sequelize = require('sequelize');
-var sequelize = new Sequelize('postgres://localhost:5432/nodegresql');
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize('postgres://localhost:5432/nodegresql');
 
-var Frienemy = sequelize.define('frienemy', {
+const Frienemy = sequelize.define('Frienemy', {
   name: Sequelize.STRING,
-  birthday: Sequelize.DATE
+  birthday: Sequelize.DATE,
+  friend: Sequelize.BOOLEAN
 });
-
-
-const Project = sequelize.define('project',{
+const Project = sequelize.define('projects', {
   name: Sequelize.STRING
 });
 
+Project.hasMany(Frienemy);
+
 let jane;
 
-Project.hasMany(Frienemy, {as: 'worker'});
-
-// the .sync adds what you need automatically to the table your using
-sequelize.sync().then(function() {
-  return Frienemy.create({
+sequelize.sync().then(() => {
+  jane = Frienemy.create({
     name: 'Jane Doe',
-    birthday: new Date('1980-6-20')
+    birthday: new Date('1980-3-4')
   });
 }).then(function(frienemy) {
-  console.log(frienemy.get({
-    plain: true
-  }));
+  console.log(jane);
 }).then(() => {
   return Project.create({
     name: 'Angular 101'
   });
+}).then((project) => {
+  // jane.addProject(project);
 });
+
 
 
